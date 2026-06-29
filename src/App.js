@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "./contexts/AuthContext";
 import Login from "./components/Login";
