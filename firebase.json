@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "site": "deal-analyzer-fe1f3",
+    "public": "build",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}

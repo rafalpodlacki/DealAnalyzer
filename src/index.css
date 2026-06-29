@@ -1,0 +1,4 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #f7f6f2; }
+input:focus { outline: 2px solid #c8410a; outline-offset: 1px; }
+input[type=range] { cursor: pointer; }
