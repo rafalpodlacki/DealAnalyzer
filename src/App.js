@@ -36,8 +36,8 @@ export default function App() {
   }
 
   if (user === undefined) return (
-    <div style={{minHeight:"100vh", background:"#0f1117", display:"flex",
-      alignItems:"center", justifyContent:"center", color:"#888",
+    <div style={{minHeight:"100vh",background:"#0f1117",display:"flex",
+      alignItems:"center",justifyContent:"center",color:"#888",
       fontFamily:"system-ui"}}>Loading…</div>
   );
 
@@ -47,45 +47,31 @@ export default function App() {
   const currentId     = activeDeal?.id || null;
 
   return (
-    <div style={{fontFamily:"'Segoe UI',system-ui,sans-serif", minHeight:"100vh"}}>
-      <div style={{
-        background:"#0f1117", color:"#fff", padding:"0 20px",
-        height:52, display:"flex", alignItems:"center", gap:16
-      }}>
-        <span style={{fontWeight:700, fontSize:"1rem", letterSpacing:".02em"}}>
-          🏠 Deal Analyser
-        </span>
-        <span style={{fontSize:".75rem", color:"#555", fontFamily:"monospace", flex:1}}>
+    <div style={{fontFamily:"'Segoe UI',system-ui,sans-serif",minHeight:"100vh"}}>
+      <div style={{background:"#0f1117",color:"#fff",padding:"0 20px",
+        height:52,display:"flex",alignItems:"center",gap:16}}>
+        <span style={{fontWeight:700,fontSize:"1rem"}}>🏠 Deal Analyser</span>
+        <span style={{fontSize:".75rem",color:"#555",fontFamily:"monospace",flex:1}}>
           Bridge → Refurb → Refi → Hold
         </span>
-        <span style={{fontSize:".75rem", color:"#888"}}>{user.email}</span>
-        <button onClick={logout} style={{
-          background:"none", border:"1px solid #333", color:"#888",
-          borderRadius:3, padding:"4px 10px", fontSize:".72rem", cursor:"pointer"
-        }}>Sign out</button>
+        <span style={{fontSize:".75rem",color:"#888"}}>{user.email}</span>
+        <button onClick={logout} style={{background:"none",border:"1px solid #333",
+          color:"#888",borderRadius:3,padding:"4px 10px",fontSize:".72rem",cursor:"pointer"}}>
+          Sign out
+        </button>
       </div>
-
-      <div style={{display:"grid", gridTemplateColumns:"220px 1fr",
-        height:"calc(100vh - 52px)"}}>
-        <div style={{borderRight:"1px solid #e2e0d8", overflowY:"auto", background:"#fff"}}>
+      <div style={{display:"grid",gridTemplateColumns:"220px 1fr",height:"calc(100vh - 52px)"}}>
+        <div style={{borderRight:"1px solid #e2e0d8",overflowY:"auto",background:"#fff"}}>
           {loading
-            ? <div style={{padding:20, color:"#aaa", fontSize:".78rem"}}>Loading deals…</div>
-            : <DealList
-                deals={deals}
-                activeDealId={currentId}
-                onSelect={setActiveDeal}
-                onNew={() => setActiveDeal(null)}
-                onDeleted={handleDeleted}
-              />
+            ? <div style={{padding:20,color:"#aaa",fontSize:".78rem"}}>Loading deals…</div>
+            : <DealList deals={deals} activeDealId={currentId}
+                onSelect={setActiveDeal} onNew={()=>setActiveDeal(null)}
+                onDeleted={handleDeleted} />
           }
         </div>
         <div style={{overflowY:"auto"}}>
-          <DealAnalyser
-            key={currentId || "new"}
-            initialInputs={currentInputs}
-            dealId={currentId}
-            onSaved={handleSaved}
-          />
+          <DealAnalyser key={currentId||"new"} initialInputs={currentInputs}
+            dealId={currentId} onSaved={handleSaved} />
         </div>
       </div>
     </div>
