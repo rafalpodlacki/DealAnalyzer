@@ -73,7 +73,7 @@ export default function App() {
         </span>
         <span style={{flex:1}} className="mobile-only" />
         <span style={{fontSize:".65rem",color:"#444",fontFamily:"monospace",
-          background:"#1a1d26",padding:"2px 6px",borderRadius:3}}>v1.2.0</span>
+          background:"#1a1d26",padding:"2px 6px",borderRadius:3}}>v1.3.0</span>
         <span className="header-email" style={{fontSize:".72rem",color:"#888"}}>{user.email}</span>
 
         {/* Mobile deals button */}
