@@ -16,6 +16,7 @@ function Field({ label, hint, children }) {
       {hint && <div style={{fontSize:".67rem",color:"#6b6860",marginBottom:4}}>{hint}</div>}
       {children}
     </div>
+    </div>
   );
 }
 
@@ -26,6 +27,7 @@ function NumInput({ prefix, suffix, value, onChange, ...rest }) {
       <input type="number" value={value} onChange={e=>onChange(parseFloat(e.target.value)||0)} {...rest}
         style={{width:"100%",padding:prefix?"7px 8px 7px 20px":suffix?"7px 28px 7px 9px":"7px 9px",border:"1px solid #e2e0d8",borderRadius:4,fontSize:".84rem",fontFamily:"monospace",background:"#f7f6f2",color:"#0f1117",boxSizing:"border-box"}} />
       {suffix && <span style={{position:"absolute",right:9,top:"50%",transform:"translateY(-50%)",fontSize:".78rem",color:"#6b6860",pointerEvents:"none",fontFamily:"monospace"}}>{suffix}</span>}
+    </div>
     </div>
   );
 }
@@ -41,6 +43,7 @@ function Metric({ label, value, sub, dark }) {
       <div style={{fontFamily:"monospace",fontSize:"1.05rem",fontWeight:700,color:dark?"#fff":"#0f1117"}}>{value}</div>
       {sub && <div style={{fontSize:".67rem",color:dark?"#888":"#6b6860",marginTop:2}}>{sub}</div>}
     </div>
+    </div>
   );
 }
 
@@ -50,6 +53,7 @@ function WfRow({ label, amount, type, total }) {
     <div style={{display:"flex",alignItems:"center",padding:"8px 15px",borderBottom:"1px solid #e2e0d8",background:total?"#f7f6f2":"#fff",fontWeight:total?700:400}}>
       <span style={{flex:1,fontSize:".78rem",color:"#0f1117"}}>{label}</span>
       <span style={{fontFamily:"monospace",fontSize:total?".9rem":".8rem",fontWeight:600,color}}>{amount}</span>
+    </div>
     </div>
   );
 }
@@ -233,7 +237,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
       </div>
 
       {/* ── RESULTS ── */}
-      <div style={{padding:22,background:"#f7f6f2",overflowY:"auto",display:"flex",flexDirection:"column",gap:16}}>
+      <div className="da-results" style={{padding:22,background:"#f7f6f2",overflowY:"auto",display:"flex",flexDirection:"column",gap:16}}>
 
         {/* Verdict */}
         <div style={{background:verdictBg,border:`1.5px solid ${verdictColor}`,borderRadius:6,padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -253,7 +257,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
         </div>
 
         {/* Key metrics */}
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+        <div className="da-metric-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
           <Metric dark label="Total Cost" value={fmt(r.totalCost)} sub="all in" />
           <Metric label="Equity Created" value={fmt(r.equityCreated)} sub="GDV − cost" />
           <Metric label="Margin on GDV" value={pct(r.marginPct)} sub={`target: ${inputs.targetMargin}%`} />
@@ -288,7 +292,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
         </div>
 
         {/* Refi + P&L */}
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+        <div className="da-refi-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
           <div style={{background:"#fff",border:"1px solid #e2e0d8",borderRadius:5,overflow:"hidden"}}>
             <div style={{padding:"10px 15px",background:"#0f1117",fontSize:".68rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#fff"}}>
               {s==="mortgage"?"Mortgage":"Refinance Exit"}
@@ -327,6 +331,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
           }
         </div>
       </div>
+    </div>
     </div>
   );
 }
