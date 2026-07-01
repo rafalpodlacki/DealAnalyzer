@@ -1,3 +1,24 @@
+// Banded SDLT for Ltd Co / additional dwelling (England, from Oct 2024)
+// Bands: 0-125k@5%, 125k-250k@7%, 250k-925k@10%, 925k-1.5m@15%, 1.5m+@17%
+function calcSDLT(price) {
+  const bands = [
+    { limit: 125000,   rate: 0.05 },
+    { limit: 250000,   rate: 0.07 },
+    { limit: 925000,   rate: 0.10 },
+    { limit: 1500000,  rate: 0.15 },
+    { limit: Infinity, rate: 0.17 },
+  ];
+  let tax = 0;
+  let prev = 0;
+  for (const band of bands) {
+    if (price <= prev) break;
+    const taxable = Math.min(price, band.limit) - prev;
+    tax += taxable * band.rate;
+    prev = band.limit;
+  }
+  return Math.round(tax);
+}
+
 export function calcDeal(inputs) {
   const {
     strategy = "bridge",
@@ -11,7 +32,8 @@ export function calcDeal(inputs) {
     targetMargin,
   } = inputs;
 
-  const sdltAmt     = bid * (sdlt / 100);
+  // Use banded SDLT if sdlt field is default/5, otherwise use custom rate
+  const sdltAmt     = (sdlt === 5) ? calcSDLT(bid) : Math.round(bid * (sdlt / 100));
   const refurbTotal = refurb * (1 + contingency / 100);
   const grossRent   = rent * 12;
   const refiFees    = (refiArrangeFee||0) + (refiValuation||0) + (refiLegal||0) + (refiBroker||0);
