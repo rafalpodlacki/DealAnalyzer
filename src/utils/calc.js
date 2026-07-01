@@ -32,8 +32,8 @@ export function calcDeal(inputs) {
     targetMargin,
   } = inputs;
 
-  // Use banded SDLT if sdlt field is default/5, otherwise use custom rate
-  const sdltAmt     = (sdlt === 5) ? calcSDLT(bid) : Math.round(bid * (sdlt / 100));
+  // Always use banded SDLT. sdltOverride only used if user explicitly set a non-zero custom value.
+  const sdltAmt     = (sdlt === 0) ? 0 : (sdlt === 5) ? calcSDLT(bid) : Math.round(bid * (sdlt / 100));
   const refurbTotal = refurb * (1 + contingency / 100);
   const grossRent   = rent * 12;
   const refiFees    = (refiArrangeFee||0) + (refiValuation||0) + (refiLegal||0) + (refiBroker||0);

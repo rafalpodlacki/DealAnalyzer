@@ -204,20 +204,22 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
         </>}
 
         <SectionLabel>Purchase Costs</SectionLabel>
-        <div style={{background:"#f7f6f2",border:"1px solid #e2e0d8",borderRadius:4,padding:"10px 10px 8px",marginBottom:14}}>
-          <div style={{fontSize:".68rem",fontWeight:700,color:"#6b6860",letterSpacing:".08em",textTransform:"uppercase",marginBottom:4}}>SDLT (Stamp Duty)</div>
-          <div style={{fontSize:".68rem",color:"#6b6860",marginBottom:8,lineHeight:1.5}}>
-            Auto-calculated using banded Ltd Co rates:<br/>
-            5% up to £125k · 7% on £125k–£250k · 10% on £250k–£925k
-          </div>
-          <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <span style={{fontSize:".72rem",color:"#6b6860"}}>Override %:</span>
-            <div style={{position:"relative",width:80}}>
-              <input type="number" value={inputs.sdlt} onChange={e=>set("sdlt")(parseFloat(e.target.value)||0)} min={0} max={15} step={0.5}
-                style={{width:"100%",padding:"6px 22px 6px 8px",border:"1px solid #e2e0d8",borderRadius:4,fontSize:".82rem",fontFamily:"monospace",background:"#fff",boxSizing:"border-box"}}/>
-              <span style={{position:"absolute",right:7,top:"50%",transform:"translateY(-50%)",fontSize:".74rem",color:"#6b6860"}}>%</span>
+        <div style={{background:"#f7f6f2",border:"1px solid #e2e0d8",borderRadius:4,padding:"10px 12px 10px",marginBottom:14}}>
+          <div style={{fontSize:".68rem",fontWeight:700,color:"#6b6860",letterSpacing:".08em",textTransform:"uppercase",marginBottom:6}}>SDLT (Stamp Duty) — Auto-calculated</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+            <div style={{fontSize:".72rem",color:"#6b6860",lineHeight:1.5}}>
+              Banded Ltd Co rates:<br/>
+              5% up to £125k · 7% on £125k–£250k · 10% on £250k–£925k
             </div>
-            <span style={{fontFamily:"monospace",fontSize:".9rem",color:"#1a7a3c",fontWeight:700}}>= {fmt(r.sdltAmt)}</span>
+            <div style={{fontFamily:"monospace",fontSize:"1.2rem",fontWeight:700,color:"#0f1117"}}>{fmt(r.sdltAmt)}</div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:6}}>
+            <span style={{fontSize:".68rem",color:"#aaa"}}>Override (leave at 5 for auto):</span>
+            <div style={{position:"relative",width:70}}>
+              <input type="number" value={inputs.sdlt} onChange={e=>set("sdlt")(parseFloat(e.target.value)||0)} min={0} max={15} step={0.5}
+                style={{width:"100%",padding:"4px 20px 4px 7px",border:"1px solid #e2e0d8",borderRadius:3,fontSize:".78rem",fontFamily:"monospace",background:"#fff",boxSizing:"border-box",color:"#aaa"}}/>
+              <span style={{position:"absolute",right:6,top:"50%",transform:"translateY(-50%)",fontSize:".72rem",color:"#aaa"}}>%</span>
+            </div>
           </div>
         </div>
         <Field label="Purchase Solicitor Fees" hint="Conveyancing cost to buy the property"><NumInput prefix="£" value={inputs.legalFees} onChange={set("legalFees")} step={100} /></Field>
