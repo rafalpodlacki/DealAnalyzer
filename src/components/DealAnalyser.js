@@ -145,7 +145,9 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
 
         <SectionLabel>Refurbishment</SectionLabel>
         <Field label="Refurb Cost"><NumInput prefix="£" value={inputs.refurb} onChange={set("refurb")} step={500} /></Field>
-        <Field label="Contingency"><NumInput suffix="%" value={inputs.contingency} onChange={set("contingency")} min={0} max={50} step={1} /></Field>
+        <Field label="Contingency" hint="Light cosmetic: 10% · Full modernisation: 15% · Heavy renovation: 20% · Structural/unknown: 25%+">
+          <NumInput suffix="%" value={inputs.contingency} onChange={set("contingency")} min={0} max={50} step={1} />
+        </Field>
 
         {/* ── BRIDGE INPUTS ── */}
         {s==="bridge" && <>
