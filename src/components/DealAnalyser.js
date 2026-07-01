@@ -166,7 +166,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
             </div>
             <Field label="Arrangement Fee"><NumInput prefix="£" value={inputs.refiArrangeFee} onChange={set("refiArrangeFee")} step={100} /></Field>
             <Field label="Valuation Fee"><NumInput prefix="£" value={inputs.refiValuation} onChange={set("refiValuation")} step={50} /></Field>
-            <Field label="Solicitor Fees"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
+            <Field label="Refi Solicitor Fees" hint="Conveyancing cost for the refinance mortgage"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
             <Field label="Broker Fee"><NumInput prefix="£" value={inputs.refiBroker} onChange={set("refiBroker")} step={100} /></Field>
           </div>
         </>
@@ -186,7 +186,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
             </div>
             <Field label="Arrangement Fee"><NumInput prefix="£" value={inputs.refiArrangeFee} onChange={set("refiArrangeFee")} step={100} /></Field>
             <Field label="Valuation Fee"><NumInput prefix="£" value={inputs.refiValuation} onChange={set("refiValuation")} step={50} /></Field>
-            <Field label="Solicitor Fees"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
+            <Field label="Refi Solicitor Fees" hint="Conveyancing cost for the refinance mortgage"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
             <Field label="Broker Fee"><NumInput prefix="£" value={inputs.refiBroker} onChange={set("refiBroker")} step={100} /></Field>
           </div>
         </>
@@ -205,7 +205,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
 
         <SectionLabel>Purchase Costs</SectionLabel>
         <Field label="SDLT Rate" hint="Ltd Co: 5% on all purchases"><NumInput suffix="%" value={inputs.sdlt} onChange={set("sdlt")} min={0} max={15} step={0.5} /></Field>
-        <Field label="Purchase Legal Fees"><NumInput prefix="£" value={inputs.legalFees} onChange={set("legalFees")} step={100} /></Field>
+        <Field label="Purchase Solicitor Fees" hint="Conveyancing cost to buy the property"><NumInput prefix="£" value={inputs.legalFees} onChange={set("legalFees")} step={100} /></Field>
 
         <SectionLabel>Rental</SectionLabel>
         <Field label="Monthly Rent"><NumInput prefix="£" value={inputs.rent} onChange={set("rent")} step={25} /></Field>
@@ -251,7 +251,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
           <WfRow label="Purchase Price (bid)" type="cost" amount={fmt(inputs.bid)} />
           <WfRow label="Auction / Buyer Fees" type="cost" amount={fmt(inputs.auctionFees)} />
           <WfRow label="SDLT" type="cost" amount={fmt(r.sdltAmt)} />
-          <WfRow label="Purchase Legal" type="cost" amount={fmt(inputs.legalFees)} />
+          <WfRow label="Purchase Solicitor" type="cost" amount={fmt(inputs.legalFees)} />
           <WfRow label={`Refurb (inc. ${inputs.contingency}% contingency)`} type="cost" amount={fmt(r.refurbTotal)} />
           {s==="bridge" && <>
             <WfRow label="Bridge Arrangement Fee" type="cost" amount={fmt(r.arrange)} />
