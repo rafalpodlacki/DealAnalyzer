@@ -145,7 +145,9 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
 
         <SectionLabel>Refurbishment</SectionLabel>
         <Field label="Refurb Cost"><NumInput prefix="£" value={inputs.refurb} onChange={set("refurb")} step={500} /></Field>
-        <Field label="Contingency"><NumInput suffix="%" value={inputs.contingency} onChange={set("contingency")} min={0} max={50} step={1} /></Field>
+        <Field label="Contingency" hint="Light cosmetic: 10% · Full modernisation: 15% · Heavy renovation: 20% · Structural/unknown: 25%+">
+          <NumInput suffix="%" value={inputs.contingency} onChange={set("contingency")} min={0} max={50} step={1} />
+        </Field>
 
         {/* ── BRIDGE INPUTS ── */}
         {s==="bridge" && <>
@@ -158,8 +160,17 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
           <SectionLabel>BTL Refinance (Exit)</SectionLabel>
           <Field label="Refinance LTV"><NumInput suffix="%" value={inputs.refiLTV} onChange={set("refiLTV")} min={50} max={80} step={5} /></Field>
           <Field label="Ltd Co BTL Rate (annual)"><NumInput suffix="%" value={inputs.refiRate} onChange={set("refiRate")} min={3} max={10} step={0.1} /></Field>
-          <Field label="Refi Fees"><NumInput prefix="£" value={inputs.refiFees} onChange={set("refiFees")} step={250} /></Field>
-        </>}
+                    <div style={{background:"#f7f6f2",border:"1px solid #e2e0d8",borderRadius:4,padding:"10px 10px 4px",marginBottom:14}}>
+            <div style={{fontSize:".68rem",fontWeight:700,color:"#6b6860",letterSpacing:".08em",textTransform:"uppercase",marginBottom:8}}>
+              Refi Fees — Total: {fmt((inputs.refiArrangeFee||0)+(inputs.refiValuation||0)+(inputs.refiLegal||0)+(inputs.refiBroker||0))}
+            </div>
+            <Field label="Arrangement Fee"><NumInput prefix="£" value={inputs.refiArrangeFee} onChange={set("refiArrangeFee")} step={100} /></Field>
+            <Field label="Valuation Fee"><NumInput prefix="£" value={inputs.refiValuation} onChange={set("refiValuation")} step={50} /></Field>
+            <Field label="Refi Solicitor Fees" hint="Conveyancing cost for the refinance mortgage"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
+            <Field label="Broker Fee"><NumInput prefix="£" value={inputs.refiBroker} onChange={set("refiBroker")} step={100} /></Field>
+          </div>
+        </>
+        }
 
         {/* ── CASH INPUTS ── */}
         {s==="cash" && <>
@@ -169,8 +180,17 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
           </div>
           <Field label="Refinance LTV"><NumInput suffix="%" value={inputs.refiLTV} onChange={set("refiLTV")} min={50} max={80} step={5} /></Field>
           <Field label="BTL Rate (annual)"><NumInput suffix="%" value={inputs.refiRate} onChange={set("refiRate")} min={3} max={10} step={0.1} /></Field>
-          <Field label="Refi Fees"><NumInput prefix="£" value={inputs.refiFees} onChange={set("refiFees")} step={250} /></Field>
-        </>}
+                    <div style={{background:"#f7f6f2",border:"1px solid #e2e0d8",borderRadius:4,padding:"10px 10px 4px",marginBottom:14}}>
+            <div style={{fontSize:".68rem",fontWeight:700,color:"#6b6860",letterSpacing:".08em",textTransform:"uppercase",marginBottom:8}}>
+              Refi Fees — Total: {fmt((inputs.refiArrangeFee||0)+(inputs.refiValuation||0)+(inputs.refiLegal||0)+(inputs.refiBroker||0))}
+            </div>
+            <Field label="Arrangement Fee"><NumInput prefix="£" value={inputs.refiArrangeFee} onChange={set("refiArrangeFee")} step={100} /></Field>
+            <Field label="Valuation Fee"><NumInput prefix="£" value={inputs.refiValuation} onChange={set("refiValuation")} step={50} /></Field>
+            <Field label="Refi Solicitor Fees" hint="Conveyancing cost for the refinance mortgage"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
+            <Field label="Broker Fee"><NumInput prefix="£" value={inputs.refiBroker} onChange={set("refiBroker")} step={100} /></Field>
+          </div>
+        </>
+        }
 
         {/* ── MORTGAGE INPUTS ── */}
         {s==="mortgage" && <>
@@ -184,8 +204,25 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
         </>}
 
         <SectionLabel>Purchase Costs</SectionLabel>
-        <Field label="SDLT Rate" hint="Ltd Co: 5% on all purchases"><NumInput suffix="%" value={inputs.sdlt} onChange={set("sdlt")} min={0} max={15} step={0.5} /></Field>
-        <Field label="Purchase Legal Fees"><NumInput prefix="£" value={inputs.legalFees} onChange={set("legalFees")} step={100} /></Field>
+        <div style={{background:"#f7f6f2",border:"1px solid #e2e0d8",borderRadius:4,padding:"10px 12px 10px",marginBottom:14}}>
+          <div style={{fontSize:".68rem",fontWeight:700,color:"#6b6860",letterSpacing:".08em",textTransform:"uppercase",marginBottom:6}}>SDLT (Stamp Duty) — Auto-calculated</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+            <div style={{fontSize:".72rem",color:"#6b6860",lineHeight:1.5}}>
+              Banded Ltd Co rates:<br/>
+              5% up to £125k · 7% on £125k–£250k · 10% on £250k–£925k
+            </div>
+            <div style={{fontFamily:"monospace",fontSize:"1.2rem",fontWeight:700,color:"#0f1117"}}>{fmt(r.sdltAmt)}</div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:6}}>
+            <span style={{fontSize:".68rem",color:"#aaa"}}>Override (leave at 5 for auto):</span>
+            <div style={{position:"relative",width:70}}>
+              <input type="number" value={inputs.sdlt} onChange={e=>set("sdlt")(parseFloat(e.target.value)||0)} min={0} max={15} step={0.5}
+                style={{width:"100%",padding:"4px 20px 4px 7px",border:"1px solid #e2e0d8",borderRadius:3,fontSize:".78rem",fontFamily:"monospace",background:"#fff",boxSizing:"border-box",color:"#aaa"}}/>
+              <span style={{position:"absolute",right:6,top:"50%",transform:"translateY(-50%)",fontSize:".72rem",color:"#aaa"}}>%</span>
+            </div>
+          </div>
+        </div>
+        <Field label="Purchase Solicitor Fees" hint="Conveyancing cost to buy the property"><NumInput prefix="£" value={inputs.legalFees} onChange={set("legalFees")} step={100} /></Field>
 
         <SectionLabel>Rental</SectionLabel>
         <Field label="Monthly Rent"><NumInput prefix="£" value={inputs.rent} onChange={set("rent")} step={25} /></Field>
@@ -231,15 +268,21 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
           <WfRow label="Purchase Price (bid)" type="cost" amount={fmt(inputs.bid)} />
           <WfRow label="Auction / Buyer Fees" type="cost" amount={fmt(inputs.auctionFees)} />
           <WfRow label="SDLT" type="cost" amount={fmt(r.sdltAmt)} />
-          <WfRow label="Purchase Legal" type="cost" amount={fmt(inputs.legalFees)} />
+          <WfRow label="Purchase Solicitor" type="cost" amount={fmt(inputs.legalFees)} />
           <WfRow label={`Refurb (inc. ${inputs.contingency}% contingency)`} type="cost" amount={fmt(r.refurbTotal)} />
           {s==="bridge" && <>
             <WfRow label="Bridge Arrangement Fee" type="cost" amount={fmt(r.arrange)} />
             <WfRow label={`Bridge Interest (${inputs.bridgeTerm}mo @ ${inputs.bridgeRate}%/mo)`} type="cost" amount={fmt(r.bridgeInt)} />
             <WfRow label="Bridge Legal + Valuation" type="cost" amount={fmt(inputs.bridgeLegal)} />
-            <WfRow label="Refinance Fees" type="cost" amount={fmt(inputs.refiFees)} />
+            <WfRow label="Refi — Arrangement" type="cost" amount={fmt(inputs.refiArrangeFee||0)} />
+            <WfRow label="Refi — Valuation" type="cost" amount={fmt(inputs.refiValuation||0)} />
+            <WfRow label="Refi — Solicitor" type="cost" amount={fmt(inputs.refiLegal||0)} />
+            <WfRow label="Refi — Broker" type="cost" amount={fmt(inputs.refiBroker||0)} />
           </>}
-          {s==="cash" && <WfRow label="Refinance Fees" type="cost" amount={fmt(inputs.refiFees)} />}
+          {s==="cash" && <><WfRow label="Refi — Arrangement" type="cost" amount={fmt(inputs.refiArrangeFee||0)} />
+            <WfRow label="Refi — Valuation" type="cost" amount={fmt(inputs.refiValuation||0)} />
+            <WfRow label="Refi — Solicitor" type="cost" amount={fmt(inputs.refiLegal||0)} />
+            <WfRow label="Refi — Broker" type="cost" amount={fmt(inputs.refiBroker||0)} /></> }
           {s==="mortgage" && <WfRow label="Mortgage Arrangement + Legal" type="cost" amount={fmt(inputs.mortFees)} />}
           <WfRow label="TOTAL COST" total amount={fmt(r.totalCost)} />
         </div>
