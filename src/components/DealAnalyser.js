@@ -166,7 +166,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
             </div>
             <Field label="Arrangement Fee"><NumInput prefix="£" value={inputs.refiArrangeFee} onChange={set("refiArrangeFee")} step={100} /></Field>
             <Field label="Valuation Fee"><NumInput prefix="£" value={inputs.refiValuation} onChange={set("refiValuation")} step={50} /></Field>
-            <Field label="Legal Fees"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
+            <Field label="Solicitor Fees"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
             <Field label="Broker Fee"><NumInput prefix="£" value={inputs.refiBroker} onChange={set("refiBroker")} step={100} /></Field>
           </div>
         </>
@@ -186,7 +186,7 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
             </div>
             <Field label="Arrangement Fee"><NumInput prefix="£" value={inputs.refiArrangeFee} onChange={set("refiArrangeFee")} step={100} /></Field>
             <Field label="Valuation Fee"><NumInput prefix="£" value={inputs.refiValuation} onChange={set("refiValuation")} step={50} /></Field>
-            <Field label="Legal Fees"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
+            <Field label="Solicitor Fees"><NumInput prefix="£" value={inputs.refiLegal} onChange={set("refiLegal")} step={100} /></Field>
             <Field label="Broker Fee"><NumInput prefix="£" value={inputs.refiBroker} onChange={set("refiBroker")} step={100} /></Field>
           </div>
         </>
@@ -259,12 +259,12 @@ export default function DealAnalyser({ initialInputs, dealId, onSaved }) {
             <WfRow label="Bridge Legal + Valuation" type="cost" amount={fmt(inputs.bridgeLegal)} />
             <WfRow label="Refi — Arrangement" type="cost" amount={fmt(inputs.refiArrangeFee||0)} />
             <WfRow label="Refi — Valuation" type="cost" amount={fmt(inputs.refiValuation||0)} />
-            <WfRow label="Refi — Legal" type="cost" amount={fmt(inputs.refiLegal||0)} />
+            <WfRow label="Refi — Solicitor" type="cost" amount={fmt(inputs.refiLegal||0)} />
             <WfRow label="Refi — Broker" type="cost" amount={fmt(inputs.refiBroker||0)} />
           </>}
           {s==="cash" && <><WfRow label="Refi — Arrangement" type="cost" amount={fmt(inputs.refiArrangeFee||0)} />
             <WfRow label="Refi — Valuation" type="cost" amount={fmt(inputs.refiValuation||0)} />
-            <WfRow label="Refi — Legal" type="cost" amount={fmt(inputs.refiLegal||0)} />
+            <WfRow label="Refi — Solicitor" type="cost" amount={fmt(inputs.refiLegal||0)} />
             <WfRow label="Refi — Broker" type="cost" amount={fmt(inputs.refiBroker||0)} /></> }
           {s==="mortgage" && <WfRow label="Mortgage Arrangement + Legal" type="cost" amount={fmt(inputs.mortFees)} />}
           <WfRow label="TOTAL COST" total amount={fmt(r.totalCost)} />
