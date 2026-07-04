@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { auth } from "../firebase";
+
+const WORKER_URL = process.env.REACT_APP_LISTING_PARSER_URL;
 
 const CONDITION_MAP = {
   "move in":      { refurb: 5000,  contingency: 10, label: "Ready to let" },
@@ -36,39 +39,26 @@ export default function ListingParser({ onExtracted }) {
     setPreview(null);
 
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const idToken = await auth.currentUser?.getIdToken();
+      if (!idToken) {
+        throw new Error("Not signed in");
+      }
+
+      const response = await fetch(WORKER_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": process.env.REACT_APP_ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-allow-browser": "true",
+          "Authorization": `Bearer ${idToken}`,
         },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1000,
-          system: `You are a UK property data extractor. Extract structured data from property listings.
-Return ONLY a JSON object with these exact keys (no markdown, no explanation):
-{
-  "address": "full address string or empty string",
-  "price": number (asking price or guide price in pounds, 0 if not found),
-  "beds": number (1-10, default 3 if not found),
-  "type": "terraced" | "semi-detached" | "detached" | "flat" | "bungalow" | "other",
-  "tenure": "freehold" | "leasehold" | "unknown",
-  "condition": "move-in ready" | "good condition" | "needs modernising" | "full renovation" | "uninhabitable" | "unknown",
-  "keyFeatures": ["short feature 1", "short feature 2"],
-  "portal": "rightmove" | "zoopla" | "onthemarket" | "auction" | "unknown",
-  "isAuction": boolean,
-  "auctionFees": number (buyer premium if mentioned, else 0)
-}`,
-          messages: [{ role: "user", content: `Extract property data from this listing:\n\n${text}` }]
-        })
+        body: JSON.stringify({ text }),
       });
 
-      const data = await response.json();
-      const raw = data.content?.[0]?.text || "";
-      const clean = raw.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(clean);
+      if (!response.ok) {
+        const errBody = await response.json().catch(() => ({}));
+        throw new Error(errBody.error || `Request failed (${response.status})`);
+      }
+
+      const parsed = await response.json();
 
       // Derive suggested inputs from extracted data
       const beds = Math.min(Math.max(parsed.beds || 3, 1), 5);
@@ -102,6 +92,7 @@ Return ONLY a JSON object with these exact keys (no markdown, no explanation):
         }
       });
     } catch (e) {
+      console.error("parseListing failed:", e);
       setError("Could not parse listing. Try including more detail from the listing page.");
     }
     setLoading(false);
