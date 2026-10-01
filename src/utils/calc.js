@@ -53,7 +53,8 @@ export function calcDeal(inputs) {
     annualMortInt  = mortgage * (refiRate / 100);
     monthlyMort    = annualMortInt / 12;
     const bridgeRedemption  = bridgeLoanAmt + arrange + bridgeInt;
-    const totalCashDeployed = cashDay1 + refurbTotal + refiFees;
+    // Bridge legal + valuation is paid in cash (only the arrangement fee and interest roll into the loan)
+    const totalCashDeployed = cashDay1 + refurbTotal + bridgeLegal + refiFees;
     cashLeftIn     = totalCashDeployed - Math.max(0, mortgage - bridgeRedemption);
     maxBidCoeff    = 1 + (sdlt/100) + (bridgeLTV/100)*(arrangeFee/100)
       + (bridgeLTV/100)*(1+arrangeFee/100)*(bridgeRate/100)*bridgeTerm;
@@ -78,7 +79,7 @@ export function calcDeal(inputs) {
     mortgage       = mortLoan;
     annualMortInt  = mortgage * (mortRate / 100);
     monthlyMort    = annualMortInt / 12;
-    cashLeftIn     = cashDay1 + refurbTotal;
+    cashLeftIn     = cashDay1 + refurbTotal + mortFees;
     maxBidCoeff    = 1 + (sdlt/100) + (1 - mortLTV/100);
     maxBidFixed    = auctionFees + legalFees + refurbTotal + mortFees;
   }

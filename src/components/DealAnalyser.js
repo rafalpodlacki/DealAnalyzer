@@ -87,12 +87,13 @@ export default function DealAnalyser({initialInputs,dealId,onSaved}){
   const handleSave=useCallback(async()=>{
     setSaving(true);
     try{
-      if(dealId){await updateDeal(user.uid,dealId,inputs,results);onSaved(dealId,inputs,results);}
-      else{const ref=await saveNewDeal(user.uid,inputs,results);onSaved(ref.id,inputs,results);}
+      const uid=user?.uid??null;
+      if(dealId){await updateDeal(uid,dealId,inputs,results);onSaved(dealId,inputs,results);}
+      else{const ref=await saveNewDeal(uid,inputs,results);onSaved(ref.id,inputs,results);}
       setSaved(true);
     }catch(e){alert("Save failed: "+e.message);}
     setSaving(false);
-  },[dealId,user.uid,inputs,results,onSaved]);
+  },[dealId,user,inputs,results,onSaved]);
 
   const r=results;
   const s=inputs.strategy||"bridge";

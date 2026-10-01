@@ -1,24 +1,32 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "./contexts/AuthContext";
-import Login from "./components/Login";
 import DealList from "./components/DealList";
 import DealAnalyser from "./components/DealAnalyser";
 import { fetchDeals } from "./services/deals";
 import { DEFAULT_INPUTS } from "./utils/calc";
 
 export default function App() {
-  const { user, logout } = useAuth();
+  const { user, login, logout, error: authError } = useAuth();
   const [deals, setDeals]             = useState([]);
   const [activeDeal, setActiveDeal]   = useState(null);
   const [loading, setLoading]         = useState(false);
   const [showDeals, setShowDeals]     = useState(false); // mobile drawer
 
+  // Signed-in users load from Firestore; guests load from this browser's localStorage.
   useEffect(() => {
-    if (!user) return;
+    if (user === undefined) return; // auth still resolving
+    let cancelled = false;
     setLoading(true);
-    fetchDeals(user.uid)
-      .then(d => { setDeals(d); if (d.length > 0) setActiveDeal(d[0]); })
-      .finally(() => setLoading(false));
+    setActiveDeal(null);
+    fetchDeals(user ? user.uid : null)
+      .then(d => {
+        if (cancelled) return;
+        setDeals(d);
+        setActiveDeal(d.length > 0 ? d[0] : null);
+      })
+      .catch(() => { if (!cancelled) setDeals([]); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [user]);
 
   const handleSaved = useCallback((id, inputs, results) => {
@@ -42,8 +50,6 @@ export default function App() {
       alignItems:"center",justifyContent:"center",color:"#888",
       fontFamily:"system-ui"}}>Loading…</div>
   );
-
-  if (!user) return <Login />;
 
   const currentInputs = activeDeal?.inputs || DEFAULT_INPUTS;
   const currentId     = activeDeal?.id || null;
@@ -73,8 +79,14 @@ export default function App() {
         </span>
         <span style={{flex:1}} className="mobile-only" />
         <span style={{fontSize:".65rem",color:"#444",fontFamily:"monospace",
-          background:"#1a1d26",padding:"2px 6px",borderRadius:3}}>v1.3.0</span>
-        <span className="header-email" style={{fontSize:".72rem",color:"#888"}}>{user.email}</span>
+          background:"#1a1d26",padding:"2px 6px",borderRadius:3}}>v1.4.0</span>
+        {authError && (
+          <span style={{fontSize:".68rem",color:"#f88",maxWidth:220,overflow:"hidden",
+            textOverflow:"ellipsis",whiteSpace:"nowrap"}} title={authError}>{authError}</span>
+        )}
+        <span className="header-email" style={{fontSize:".72rem",color:"#888"}}>
+          {user ? user.email : "Guest · deals saved in this browser only"}
+        </span>
 
         {/* Mobile deals button */}
         <button className="mobile-deals-btn" onClick={()=>setShowDeals(true)}
@@ -83,11 +95,19 @@ export default function App() {
           📋 Deals ({deals.length})
         </button>
 
-        <button onClick={logout} style={{background:"none",border:"1px solid #333",
-          color:"#888",borderRadius:3,padding:"4px 8px",fontSize:".7rem",cursor:"pointer",
-          whiteSpace:"nowrap"}}>
-          Sign out
-        </button>
+        {user ? (
+          <button onClick={logout} style={{background:"none",border:"1px solid #333",
+            color:"#888",borderRadius:3,padding:"4px 8px",fontSize:".7rem",cursor:"pointer",
+            whiteSpace:"nowrap"}}>
+            Sign out
+          </button>
+        ) : (
+          <button onClick={login} title="Optional: save deals to your account and use AI listing extraction"
+            style={{background:"none",border:"1px solid #c8410a",color:"#e8663a",borderRadius:3,
+              padding:"4px 8px",fontSize:".7rem",cursor:"pointer",whiteSpace:"nowrap"}}>
+            Sign in with Google
+          </button>
+        )}
       </div>
 
       {/* Mobile deals drawer */}

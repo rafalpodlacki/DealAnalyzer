@@ -41,7 +41,7 @@ export default function ListingParser({ onExtracted }) {
     try {
       const idToken = await auth.currentUser?.getIdToken();
       if (!idToken) {
-        throw new Error("Not signed in");
+        throw new Error("Sign in with Google (top right) to use AI listing extraction. The calculator itself works without an account.");
       }
 
       const response = await fetch(WORKER_URL, {
