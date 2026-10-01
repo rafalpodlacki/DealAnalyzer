@@ -12,9 +12,13 @@ export default function DealList({ deals, activeDealId, onSelect, onNew, onDelet
     e.stopPropagation();
     if (!window.confirm("Delete this deal?")) return;
     setDeleting(id);
-    await deleteDeal(user.uid, id);
+    try {
+      await deleteDeal(user?.uid ?? null, id);
+      onDeleted(id);
+    } catch (err) {
+      alert("Delete failed: " + err.message);
+    }
     setDeleting(null);
-    onDeleted(id);
   }
 
   return (
