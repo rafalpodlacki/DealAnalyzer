@@ -79,7 +79,7 @@ export default function App() {
         </span>
         <span style={{flex:1}} className="mobile-only" />
         <span style={{fontSize:".65rem",color:"#444",fontFamily:"monospace",
-          background:"#1a1d26",padding:"2px 6px",borderRadius:3}}>v1.4.0</span>
+          background:"#1a1d26",padding:"2px 6px",borderRadius:3}}>v1.4.1</span>
         {authError && (
           <span style={{fontSize:".68rem",color:"#f88",maxWidth:220,overflow:"hidden",
             textOverflow:"ellipsis",whiteSpace:"nowrap"}} title={authError}>{authError}</span>
