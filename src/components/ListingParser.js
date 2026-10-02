@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { auth } from "../firebase";
+import { useAuth } from "../contexts/AuthContext";
 
 const WORKER_URL = process.env.REACT_APP_LISTING_PARSER_URL;
 
@@ -26,7 +27,10 @@ const GDV_BY_BEDS = { 1: 90000, 2: 115000, 3: 140000, 4: 175000, 5: 210000 };
 // Rent estimates by beds (Scunthorpe market)
 const RENT_BY_BEDS = { 1: 500, 2: 625, 3: 750, 4: 900, 5: 1100 };
 
+const MAX_LISTING_CHARS = 20000; // matches the Worker's limit
+
 export default function ListingParser({ onExtracted }) {
+  const { user, login } = useAuth();
   const [text, setText]       = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState(null);
@@ -34,6 +38,10 @@ export default function ListingParser({ onExtracted }) {
 
   async function handleParse() {
     if (!text.trim()) return;
+    if (!user) {
+      setError("signin");
+      return;
+    }
     setLoading(true);
     setError(null);
     setPreview(null);
@@ -41,7 +49,9 @@ export default function ListingParser({ onExtracted }) {
     try {
       const idToken = await auth.currentUser?.getIdToken();
       if (!idToken) {
-        throw new Error("Sign in with Google (top right) to use AI listing extraction. The calculator itself works without an account.");
+        setError("signin");
+        setLoading(false);
+        return;
       }
 
       const response = await fetch(WORKER_URL, {
@@ -50,7 +60,7 @@ export default function ListingParser({ onExtracted }) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text: text.trim().slice(0, MAX_LISTING_CHARS) }),
       });
 
       if (!response.ok) {
@@ -93,7 +103,10 @@ export default function ListingParser({ onExtracted }) {
       });
     } catch (e) {
       console.error("parseListing failed:", e);
-      setError("Could not parse listing. Try including more detail from the listing page.");
+      const msg = e instanceof TypeError
+        ? "Couldn't reach the extraction service. Check your connection and try again."
+        : (e.message || "Could not parse listing. Try including more detail from the listing page.");
+      setError(msg);
     }
     setLoading(false);
   }
@@ -149,7 +162,24 @@ export default function ListingParser({ onExtracted }) {
           }}
         />
 
-        {error && (
+        {error === "signin" && (
+          <div style={{
+            background:"#fff8e6", border:"1px solid #e6c36a", borderRadius:3,
+            padding:"10px 12px", fontSize:".73rem", color:"#7a5a00",
+            marginTop:6, lineHeight:1.5
+          }}>
+            AI listing extraction needs a free Google sign-in. Everything else in the
+            calculator works without one — you can also type the numbers in below.
+            <div style={{marginTop:8}}>
+              <button onClick={login} style={{
+                background:"#c8410a", color:"#fff", border:"none", borderRadius:3,
+                padding:"6px 12px", fontSize:".72rem", fontWeight:700, cursor:"pointer"
+              }}>Sign in with Google</button>
+            </div>
+          </div>
+        )}
+
+        {error && error !== "signin" && (
           <div style={{
             background:"#fdeaea", border:"1px solid #e88", borderRadius:3,
             padding:"8px 10px", fontSize:".73rem", color:"#b81c1c",
