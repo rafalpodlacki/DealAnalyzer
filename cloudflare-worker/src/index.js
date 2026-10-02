@@ -92,7 +92,7 @@ export default {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-6",
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 1000,
         system: SYSTEM_PROMPT,
         messages: [
@@ -102,8 +102,13 @@ export default {
     });
 
     if (!anthropicRes.ok) {
-      console.error("Anthropic API error", anthropicRes.status, await anthropicRes.text());
-      return json({ error: "Failed to reach the extraction service" }, 502, headers);
+      const upstreamBody = await anthropicRes.text();
+      console.error("Anthropic API error", anthropicRes.status, upstreamBody);
+      // Surface the upstream status and error type (never the key) so failures are diagnosable from the browser.
+      let upstreamType = "";
+      try { upstreamType = JSON.parse(upstreamBody)?.error?.type || ""; } catch {}
+      const detail = `Anthropic ${anthropicRes.status}${upstreamType ? `: ${upstreamType}` : ""}`;
+      return json({ error: `Failed to reach the extraction service (${detail})` }, 502, headers);
     }
 
     const data = await anthropicRes.json();
